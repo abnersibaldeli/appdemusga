@@ -1,1 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Música Offline</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 24px;
+            color: #6c5ce7;
+        }
+        
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn.active {
+            background: #6c5ce7;
+        }
+        
+        .nav-btn:hover {
+            background: #6c5ce7;
+        }
+        
+        .now-playing {
+            background: linear-gradient(135deg, #6c5ce7 0%, #8e7ffe 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .album-art {
+            width: 180px;
+            height: 180px;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #00cec9, #0984e3);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .song-info {
+            margin-bottom: 20px;
+        }
+        
+        .song-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .song-artist {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 45%;
+            background: white;
+            border-radius: 3px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-top: 10px;
+        }
+        
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.9;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .control-btn.play-pause {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            color: #6c5ce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .playlists {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .view-all {
+            font-size: 14px;
+            color: #6c5ce7;
+            text-decoration: none;
+        }
+        
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .playlist-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .playlist-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .playlist-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+        }
+        
+        .playlist-info {
+            margin-bottom: 10px;
+        }
+        
+        .playlist-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .playlist-count {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .songs-list {
+            margin-top: 30px;
+        }
+        
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .song-number {
+            font-size: 14px;
+            opacity: 0.7;
+            width: 25px;
+        }
+        
+        .song-details {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .song-item-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .song-item-artist {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .song-duration {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .song-item i {
+            margin-left: 15px;
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 500px;
+            }
+            
+            .playlist-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <h1>Música Offline</h1>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn active"><i class="fas fa-home"></i></button>
+                <button class="nav-btn"><i class="fas fa-search"></i></button>
+                <button class="nav-btn"><i class="fas fa-cog"></i></button>
+            </div>
+        </header>
+        
+        <div class="now-playing">
+            <div class="album-art">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="song-info">
+                <h2 class="song-title">Bohemian Rhapsody</h2>
+                <p class="song-artist">Queen</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress">
+                    <span>2:15</span>
+                    <span>5:05</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="control-btn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-pause">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="control-btn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="playlists">
+            <div class="section-title">
+                <h2>Suas Playlists</h2>
+                <a href="#" class="view-all">Ver todas</a>
+            </div>
+            <div class="playlist-grid">
+                <div class="playlist-card">
+                    <div class="playlist-image">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="playlist-info">
+                        <h3 class="playlist-name">Músicas Curtidas</h3>
+                        <p class="playlist-count">12 músicas</p>
+                    </div>
+                </div>
+                <div class="playlist-card">
+                    <div class="playlist-image">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="playlist-info">
+                        <h3 class="playlist-name">Mais Tocadas</h3>
+                        <p class="playlist-count">10 músicas</p>
+                    </div>
+                </div>
+                <div class="playlist-card">
+                    <div class="playlist-image">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="playlist-info">
+                        <h3 class="playlist-name">Adicionadas Recentemente</h3>
+                        <p class="playlist-count">8 músicas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="songs-list">
+            <div class="section-title">
+                <h2>Músicas</h2>
+                <a href="#" class="view-all">Ordenar</a>
+            </div>
+            <div class="song-item">
+                <div class="song-number">1</div>
+                <div class="song-details">
+                    <h3 class="song-item-title">Bohemian Rhapsody</h3>
+                    <p class="song-item-artist">Queen</p>
+                </div>
+                <div class="song-duration">5:05</div>
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="song-item">
+                <div class="song-number">2</div>
+                <div class="song-details">
+                    <h3 class="song-item-title">Blinding Lights</h3>
+                    <p class="song-item-artist">The Weeknd</p>
+                </div>
+                <div class="song-duration">3:22</div>
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="song-item">
+                <div class="song-number">3</div>
+                <div class="song-details">
+                    <h3 class="song-item-title">Shape of You</h3>
+                    <p class="song-item-artist">Ed Sheeran</p>
+                </div>
+                <div class="song-duration">3:54</div>
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="song-item">
+                <div class="song-number">4</div>
+                <div class="song-details">
+                    <h3 class="song-item-title">Hotel California</h3>
+                    <p class="song-item-artist">Eagles</p>
+                </div>
+                <div class="song-duration">6:30</div>
+                <i class="far fa-heart"></i>
+            </div>
+            <div class="song-item">
+                <div class="song-number">5</div>
+                <div class="song-details">
+                    <h3 class="song-item-title">Uptown Funk</h3>
+                    <p class="song-item-artist">Mark Ronson ft. Bruno Mars</p>
+                </div>
+                <div class="song-duration">4:30</div>
+                <i class="fas fa-heart"></i>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const playPauseBtn = document.querySelector('.play-pause');
+            const heartIcons = document.querySelectorAll('.song-item i');
+            
+            // Toggle play/pause
+            playPauseBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-play')) {
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                } else {
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                }
+            });
+            
+            // Toggle favorite
+            heartIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    if (this.classList.contains('fa-heart')) {
+                        this.classList.remove('fa-heart');
+                        this.classList.add('far', 'fa-heart');
+                    } else {
+                        this.classList.remove('far', 'fa-heart');
+                        this.classList.add('fas', 'fa-heart');
+                    }
+                });
+            });
+            
+            // Simulate progress bar movement when playing
+            setInterval(() => {
+                const progressFill = document.querySelector('.progress-fill');
+                const progress = parseFloat(progressFill.style.width) || 45;
+                
+                if (progress < 100 && playPauseBtn.querySelector('i').classList.contains('fa-pause')) {
+                    progressFill.style.width = (progress + 0.1) + '%';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
